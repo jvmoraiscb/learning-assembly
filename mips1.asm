@@ -1,12 +1,10 @@
 .data
-msg1: .asciiz "Digite um valor inteiro: "
-msg2: .asciiz "Saida: "
-msg3: .asciiz "\n\n"
+	msg1: .asciiz "Digite um valor inteiro: "
+	
 .text
-
 # print message on shell
 li $s0, 0x00400000 # save return adress in $s0
-li $v0, 4 # system call for print_str
+L1:li $v0, 4 # system call for print_str
 la $a0, msg1 # address of string to print
 syscall
 
@@ -18,21 +16,9 @@ syscall # the integer is placed in $v0
 addu $t0, $v0, $0 # move the number to $t0
 sll $t0, $t0, 4 # change <digit> with the last digit of your UFES id (matricula)
 
-# print message on shell
-li $s0, 0x00400000 # save return adress in $s0
-li $v0, 4 # system call for print_str
-la $a0, msg2 # address of string to print
-syscall
-
 # print the result in shell
 li $v0, 1 # system call for print_int
 addu $a0, $t0, $0 # move number to be printed in $a0
-syscall
-
-# print message on shell
-li $s0, 0x00400000 # save return adress in $s0
-li $v0, 4 # system call for print_str
-la $a0, msg3 # address of string to print
 syscall
 
 # restore now the return address in $ra and return from main
