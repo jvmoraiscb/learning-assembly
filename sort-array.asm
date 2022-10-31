@@ -27,6 +27,7 @@ msg2: .asciiz "Enter the "
 msg3: .asciiz "º vector's element: "
 msg4: .asciiz "\nVector: "
 msg5: .asciiz "\nSorted vector: "
+msg6: .asciiz "\nClean vector: "
 
 .text
 
@@ -72,6 +73,15 @@ exitMain:
     jal     SortArray
     li      $v0, 4              # code for print string
     la      $a0, msg5           # string address
+    syscall
+    move    $a0, $s0            # a0 for PrintArray function
+    move    $a1, $s1            # a1 for PrintArray function
+    jal     PrintArray
+    move    $a0, $s0            # a0 for ClearArray function
+    move    $a1, $s1            # a1 for ClearArray function
+    jal     ClearArray
+    li      $v0, 4              # code for print string
+    la      $a0, msg6           # string address
     syscall
     move    $a0, $s0            # a0 for PrintArray function
     move    $a1, $s1            # a1 for PrintArray function
@@ -144,6 +154,28 @@ exit1Sort:
     lw      $s0, 0($sp)         # restore s0 from stack
     addi    $sp, $sp, 20        # restore stack
     jr      $ra                 # return to caller
+
+ClearArray:                     # a0 = v (array address), a1 = n (array size)
+    addi    $sp, $sp, -12       # create space for 1 register
+    sw      $s2, 8($sp)         # save s2 in stack
+    sw      $s1, 4($sp)         # save s1 in stack
+    sw      $s0, 0($sp)         # save s0 in stack
+    move    $s0, $a0            # s0 = v
+    move    $s1, $a1            # s1 = n
+    move    $s2, $0             # s2 = 0 
+forClear:
+    beq     $s2, $s1 exitClear  # jump to exitPrint if s0 = s1
+    sll     $t0, $s2, 2         # t0 = s2 * 4
+    addu    $t1, $s0, $t0       # t1 = s0[t0]
+    sw      $0, ($t1)           # a0 = s0[t0] value
+    addi    $s2, $s2, 1         # s2++
+    j       forClear
+exitClear:
+    lw      $s0, 0($sp)         # restore s0 from stack
+    lw      $s1, 4($sp)         # restore s0 from stack
+    lw      $s2, 8($sp)         # restore s0 from stack
+    addi    $sp, $sp, 12        # restore stack
+    jr      $ra                 # return
 
 Swap:                           # a0 = v (array address), a1 = k (position in array)
     sll     $t1, $a1,2          # t1 = k * 4    (positions are multiples of four)
