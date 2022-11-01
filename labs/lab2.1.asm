@@ -1,4 +1,3 @@
-###################################
 .data
 
 var1:       .word 0x01
@@ -9,7 +8,6 @@ var4:       .word 0x04
 primeiro:   .byte 0x42 # hex to 'B'
 ultimo:     .byte 0x53 # hex to 'S'
 
-###################################
 .text
 
 Main:
