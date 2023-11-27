@@ -1,0 +1,1 @@
+yay -S base-devel gmp libmpc mpfr xorriso
