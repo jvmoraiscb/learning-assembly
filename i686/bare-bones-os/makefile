@@ -1,18 +1,19 @@
-all: clean create_iso clean_o
+PATH_CROSS_COMPILER = $$HOME/opt/cross/bin
 
-create_iso:
-	@ export PATH="$HOME/opt/cross/bin:$PATH"
-	@ i686-elf-as boot.s -o boot.o
-	@ i686-elf-gcc -c kernel.c -o kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra
-	@ i686-elf-gcc -T linker.ld -o myos.bin -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc
+all: create_iso clean_obj_files
+
+create_iso: clean
+	@ $(PATH_CROSS_COMPILER)/i686-elf-as boot.s -o boot.o
+	@ $(PATH_CROSS_COMPILER)/i686-elf-gcc -c kernel.c -o kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra
+	@ $(PATH_CROSS_COMPILER)/i686-elf-gcc -T linker.ld -o myos.bin -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc
 	@ mkdir -p isodir/boot/grub
 	@ cp myos.bin isodir/boot/myos.bin
 	@ cp grub.cfg isodir/boot/grub/grub.cfg
 	@ grub-mkrescue -o myos.iso isodir
 
-clean_o:
+clean_obj_files:
 	@ rm -rf *.o *.bin isodir
 
 clean:
-	@ make clean_o
+	@ rm -rf *.o *.bin isodir
 	@ rm -rf *.iso
